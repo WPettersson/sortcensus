@@ -62,7 +62,7 @@ struct Data {
     Data* minimal;
 
     Data(const std::string& from) : sig(from), parent(0), depth(0), minimal(this) {
-        smallest = sig.length();
+        smallest = sig[0] - 'a';
     }
 
     Data* root() {
