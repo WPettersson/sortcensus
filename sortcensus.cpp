@@ -41,6 +41,8 @@
  */
 
 #include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <cstring>
 #include <map>
@@ -533,6 +535,8 @@ void usage(char* name) {
     std::exit(-1);
 }
 
+extern errno;
+
 int main(int argc, char* argv[]) {
 
     ThreadPool p(3); // TODO num threads
@@ -550,7 +554,27 @@ int main(int argc, char* argv[]) {
         usage(argv[0]);
 
     int level = atoi(argv[2]);
-    DIR *d = opendir(argv[3]);
+    DIR *d = opendir(argv[4]);
+    if (d == NULL) {
+        if (errno == ENOENT) {
+            // Set creation mask
+            umask(0);
+            // Create dir
+            mkdir(argv[4],0777);
+        } else {
+        std::cerr << "Error: Could not open " << argv[3]
+            << " as output directory." << std::endl;
+        std::exit(1);
+        }
+    }
+    closedir(d);
+
+    d = opendir(argv[3]);
+    if (d == NULL) {
+        std::cerr << "Error: Could not open " << argv[3]
+            << " as input directory." << std::endl;
+        std::exit(1);
+    }
     dirent *dirp;
 
     while (( dirp = readdir(d)) != NULL) {
