@@ -503,6 +503,8 @@ void partition(const std::string iname, int depth, const std::string oname) {
     std::map<std::string, Profile> profiles;
     for (auto graphit = graphs.begin(); graphit != graphs.end(); ++graphit) {
         Graph& g = graphit->second;
+        if (nComp[graphit->first] == 1)
+            continue;
         for (auto git = g.begin(); git != g.end(); ++git) {
             Data *r = git->second->root();
             auto pit = profiles.find(r->sig);
