@@ -560,7 +560,7 @@ int main(int argc, char* argv[]) {
             // Set creation mask
             umask(0);
             // Create dir
-            mkdir(argv[4],0777);
+            mkdir(argv[4],0755);
         } else {
         std::cerr << "Error: Could not open " << argv[3]
             << " as output directory." << std::endl;
