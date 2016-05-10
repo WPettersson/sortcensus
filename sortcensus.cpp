@@ -6,7 +6,7 @@
  * mode is either -i (invariants) or -p (Pachner moves)
  * levels is an integer, stating how many invariants to add/how many levels of
  * the Pachner graph to explore
- * <input-dir> is a directory containing .sig files, each of which will be
+ * <input-dir> is a directory containing .sigs files, each of which will be
  * processed
  * <output-dir> should already exist, and is where each output file will be
  * placed.
@@ -20,7 +20,7 @@
  * Note that both the invariant string and queue are optional, and that there
  * may be more than one space-separated list of signatures. The invariant
  * string, if present, beings with a hash (#) then a space, and contains
- * invariants common to all triangulations. The invariants used are, in order:
+ * invariants common to all triangulations in the file. The invariants used are, in order:
  * orientability (denoted as orbl or nor)
  * homology
  * TuraevViro(3, true)
@@ -475,7 +475,7 @@ void dump_partition(const std::string fname, const Graph& graph, const
     int count = 0;
     for (auto cit = parts.begin(); cit != parts.end(); ++cit) {
         std::stringstream name;
-        name << fname << count++ << ".sig";
+        name << fname << count++ << ".sigs";
         std::ofstream out(name.str());
         out << cit->first << std::endl;
         for (auto comp: cit->second) {
@@ -531,7 +531,7 @@ void usage(char* name) {
     std::cout << "Usage: " << name << " -p|-i <depth> <indir> <outdir>" << std::endl;
     std::cout << "  -p means build <depth> levels of the Pachner graph" << std::endl;
     std::cout << "  -i means add <depth> invariants to each profile" << std::endl;
-    std::cout << "  <indir> must be a directory containing .sig files" << std::endl;
+    std::cout << "  <indir> must be a directory containing .sigs files" << std::endl;
     std::exit(-1);
 }
 
@@ -579,26 +579,19 @@ int main(int argc, char* argv[]) {
 
     while (( dirp = readdir(d)) != NULL) {
         int len = strlen(dirp->d_name);
-        if (len > 4) {
-            if (strncmp( dirp->d_name + (len-4), ".sig", 4) == 0) {
-                int count = 0;
+        if (len > 5) {
+            if (strncmp( dirp->d_name + (len-5), ".sigs", 5) == 0) {
                 std::stringstream iname;
                 std::stringstream oname;
                 iname << argv[3] << "/" << dirp->d_name;
                 oname << argv[4] << "/";
                 if (mode == PARTITION) {
                     std::string dname(dirp->d_name);
-                    oname << dname.substr(0, dname.length() - 4) << "_";
-//                    std::cout << "Reading from " << iname.str() << " and dumping to "
-//                        << oname.str() << "%d.sig" << std::endl;
+                    oname << dname.substr(0, dname.length() - 5) << "_";
                     p.enqueue(&partition, iname.str(), level, oname.str());
-                    //partition(iname.str(), level, oname.str());
                 } else if (mode == PACHNER) {
                     oname << dirp->d_name;
-//                    std::cout << "Reading from " << iname.str() << " and dumping to "
-//                        << oname.str() << std::endl;
                     p.enqueue(&pachner, iname.str(), level, oname.str());
-                    //pachner(iname.str(), level, oname.str());
                 }
             }
         }
