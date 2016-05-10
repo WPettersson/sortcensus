@@ -539,19 +539,19 @@ void partition(const std::string iname, int depth, const std::string oname) {
     std::map<std::string, Profile> profiles;
     for (auto graphit = graphs.begin(); graphit != graphs.end(); ++graphit) {
         Graph& g = graphit->second;
-        if (nComp[graphit->first] == 1)
-            continue;
         for (auto git = g.begin(); git != g.end(); ++git) {
             Data *r = git->second->root();
             auto pit = profiles.find(r->sig);
             if (pit == profiles.end()) {
                 Profile p(graphit->first);
-                NTriangulation *tri = NTriangulation::fromIsoSig(r->sig);
-                for(int i=0; i < depth; ++i) {
-                    p.extend(*tri);
+                if (nComp[graphit->first] > 1) {
+                    NTriangulation *tri = NTriangulation::fromIsoSig(r->sig);
+                    for(int i=0; i < depth; ++i) {
+                        p.extend(*tri);
+                    }
+                    delete tri;
                 }
                 profiles.insert(std::make_pair(r->sig, p));
-                delete tri;
             }
         }
         std::vector<std::string> q=waiting[graphit->first];
