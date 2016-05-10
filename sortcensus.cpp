@@ -487,9 +487,8 @@ void dump_partition(const std::string fname, const Graph& graph, const
     typedef std::map<std::string, std::vector<Comp>> Part;
     Part parts;
 
+    // Create comps, which stores list of vectors for each component
     for (auto i = graph.begin(); i != graph.end(); ++i) {
-        // We print out everything (even bigger triangulations), as we may
-        // extend this graph later.
         Data *r = i->second->root();
         auto it = comps.find(r->sig);
         if (it == comps.end())
@@ -497,6 +496,7 @@ void dump_partition(const std::string fname, const Graph& graph, const
         it->second.push_back(i->second->sig);
     }
 
+    // Create partition, one for each distinct profile
     for (auto i = comps.begin(); i != comps.end(); ++i) {
         const Profile &p = profiles.at(i->first);
         auto it = parts.find(p.str);
