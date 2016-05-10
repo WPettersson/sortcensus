@@ -354,6 +354,9 @@ void dump_pachner(const std::string fname, const Profile& p, const Graph&
     Comb comps;
 
     for (auto i = graph.begin(); i != graph.end(); ++i) {
+        // Ignore bigger triangulations/signatures
+        if (i->first[0] > 'a' + maxN)
+            continue;
         // If the smallest representation has less than maxN tetrahedra, we
         // won't print any of the triangulations
         if (root(i->second)->smallest == maxN)
@@ -378,14 +381,14 @@ void dump_pachner(const std::string fname, const Profile& p, const Graph&
         prev = pos;
         ++pos;
     }
-    if (! q.empty()) {
-        out << std::endl << "#q";
-        do {
-            if (q.front() != graph.end())
-                out << " " << q.front()->first;
-            q.pop();
-        } while (! q.empty());
-    }
+//    if (! q.empty()) {
+//        out << std::endl << "#q";
+//        do {
+//            if (q.front() != graph.end())
+//                out << " " << q.front()->first;
+//            q.pop();
+//        } while (! q.empty());
+//    }
     out << std::endl;
     out.close();
 }
